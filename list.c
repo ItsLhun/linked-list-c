@@ -1,4 +1,3 @@
-#include <cs50.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,7 +12,7 @@ node;
 
 // Prototypes
 void freeList(struct node* list);
-void insertSortedNode(struct node* insertedNode, struct node* list);
+void insertSortedNode(struct node* insertedNode, struct node** list);
 void printLinkedList(struct node* list);
 
 
@@ -31,12 +30,12 @@ int main(void)
     n->next = NULL;
 
     //list = n;
-    insertSortedNode(n, list);
+    insertSortedNode(n, &list);
 
     printLinkedList(list);
 
 
-    // second node
+    //second node
     n = malloc(sizeof(node));
     if (n == NULL)
     {
@@ -45,7 +44,8 @@ int main(void)
     }
     n->number = 5;
     n->next = NULL;
-    insertSortedNode(n, list);
+    insertSortedNode(n, &list);
+    printLinkedList(list);
 
     // third
     n = malloc(sizeof(node));
@@ -58,7 +58,7 @@ int main(void)
     }
     n->number = 2;
     n->next = NULL;
-    insertSortedNode(n, list);
+    insertSortedNode(n, &list);
 
     printLinkedList(list);
 
@@ -71,7 +71,7 @@ int main(void)
     n->next = NULL;
 
 
-    insertSortedNode(n, list);
+    insertSortedNode(n, &list);
     printLinkedList(list);
 
     freeList(list);
@@ -87,17 +87,19 @@ void freeList(struct node *list)
     }
 }
 
-void insertSortedNode(struct node* insertedNode, struct node* list)
+void insertSortedNode(struct node* insertedNode, struct node** list)
 {
-    if (!list)
+    // this checks if this is the first node
+    if (*list == NULL)
     {
-        printf("List is empty, node starting\n");
-        list = insertedNode;
+        insertedNode->next = *list;
+        *list = insertedNode;
         return;
     }
 
-    for(node *tmp = list; tmp != NULL; tmp = tmp->next)
+    for(node* tmp = *list; tmp != NULL; tmp = tmp->next)
     {
+        // this checks if we are at the end, then appends the node last
         if (tmp->next == NULL)
         {
             tmp->next = insertedNode;
